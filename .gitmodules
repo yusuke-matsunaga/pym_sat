@@ -1,0 +1,9 @@
+[submodule "ym-sat"]
+	path = ym-sat
+	url = https://github.com/yusuke-matsunaga/ym-sat.git
+[submodule "ym-base"]
+	path = ym-base
+	url = https://github.com/yusuke-matsunaga/ym-base.git
+[submodule "ym-common"]
+	path = ym-common
+	url = https://github.com/yusuke-matsunaga/ym-common.git
