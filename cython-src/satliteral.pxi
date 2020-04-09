@@ -45,19 +45,25 @@ cdef class SatLiteral :
     ### @brief 負極性の時 True を返す．
     @property
     def is_negative(SatLiteral self) :
-        return not self.is_positive()
+        return not self.is_positive
 
     ### @brief 変数番号が同じの正極性のリテラルを返す．
     def make_positive(SatLiteral self) :
-        return SatLiteral(self.varid(), False)
+        ans = SatLiteral()
+        ans.__body = self.__body & ~1
+        return ans
 
     ### @brief 変数番号が同じの負極性のリテラルを返す．
-    def make_positive(SatLiteral self) :
-        return SatLiteral(self.varid(), True)
+    def make_negative(SatLiteral self) :
+        ans = SatLiteral()
+        ans.__body = self.__body | 1
+        return ans
 
     ### @brief 否定演算子
     def __invert__(SatLiteral self) :
-        return SatLiteral(self.varid(), self.is_positive())
+        ans = SatLiteral()
+        ans.__body = self.__body ^ 1
+        return ans
 
     ### @brief 文字列演算子
     def __repr__(SatLiteral self) :

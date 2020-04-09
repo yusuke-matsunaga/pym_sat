@@ -20,12 +20,16 @@ cdef class SatSolver :
 
     # C++ レベルのオブジェクト本体
     cdef CXX_SatSolver* _this_ptr
+    cdef list __var_list
 
     ### @brief 初期化
     ### @param[in] sat_type SATソルバの種類を表す文字列
     ### @param[in] sat_option SATソルバに対するオプションを表す文字列
     def __cinit__(SatSolver self, SatSolverType solver_type = SatSolverType()) :
         self._this_ptr = new CXX_SatSolver(solver_type._this)
+
+    def __init__(SatSolver self) :
+        self.__var_list = list()
 
     ### @brief 終了処理
     def __dealloc__(SatSolver self) :
@@ -44,7 +48,9 @@ cdef class SatSolver :
     ### * 変数そのもの(VarId)ではないことに注意
     def new_variable(SatSolver self, bool decision = True) :
         cdef CXX_SatLiteral c_lit = self._this_ptr.new_variable(decision)
-        return to_literal(c_lit)
+        lit = to_literal(c_lit)
+        self.__var_list.append(lit)
+        return lit
 
     ### @brief 条件リテラルを設定する．
     ### @param[in] args リテラルのリスト
@@ -100,8 +106,7 @@ cdef class SatSolver :
         if stat == SatBool3.TRUE :
             n = self._this_ptr.model_size()
             model = dict()
-            for i in range(n) :
-                lit = SatLiteral(i, False)
+            for lit in self.__var_list :
                 c_lit = from_literal(lit)
                 c_val = self._this_ptr.read_model(c_lit)
                 val = to_SatBool3(c_val)
